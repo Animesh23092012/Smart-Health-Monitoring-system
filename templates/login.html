@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Smart Health Monitoring System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #071b35, #123e62);
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 35px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+        }
+
+        .logo {
+            text-align: center;
+            color: #087f8c;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 12px 0 8px;
+            color: #102b46;
+            font-size: 25px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .login-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .login-option {
+            padding: 13px 8px;
+            border: 2px solid #dce5ec;
+            border-radius: 10px;
+            background: white;
+            color: #40566c;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .login-option.active {
+            border-color: #087f8c;
+            background: #e8f7f7;
+            color: #087f8c;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            color: #263b50;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus {
+            border-color: #087f8c;
+        }
+
+        .submit-button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #087f8c;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submit-button:hover {
+            background: #066773;
+        }
+
+        .error {
+            padding: 11px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background: #fff0f0;
+            color: #b42318;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .bottom-links {
+            text-align: center;
+            margin-top: 20px;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 2;
+        }
+
+        a {
+            color: #087f8c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #64748b;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+
+        <div class="logo">+</div>
+
+        <h1>Welcome Back</h1>
+
+        <p class="subtitle">
+            Smart Health Monitoring System
+        </p>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+
+            <div class="login-options">
+                <button
+                    type="button"
+                    class="login-option active"
+                    id="userButton"
+                    onclick="chooseLogin('user')">
+                    👤 User Login
+                </button>
+
+                <button
+                    type="button"
+                    class="login-option"
+                    id="adminButton"
+                    onclick="chooseLogin('admin')">
+                    🔐 Admin Login
+                </button>
+            </div>
+
+            <input
+                type="hidden"
+                name="login_type"
+                id="loginType"
+                value="user">
+
+            <label for="user_id">User ID</label>
+            <input
+                type="text"
+                id="user_id"
+                name="user_id"
+                placeholder="Enter your User ID"
+                maxlength="40"
+                required>
+
+            <label for="password">Password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                required>
+
+            <button type="submit" class="submit-button">
+                Login →
+            </button>
+
+        </form>
+
+        <div class="bottom-links">
+            Don't have an account?
+            <a href="{{ url_for('register') }}">Create User Account</a>
+        </div>
+
+        <a href="{{ url_for('home') }}" class="back-link">
+            ← Back to Home
+        </a>
+
+    </div>
+
+    <script>
+        function chooseLogin(type) {
+            document.getElementById("loginType").value = type;
+
+            document.getElementById("userButton")
+                .classList.toggle("active", type === "user");
+
+            document.getElementById("adminButton")
+                .classList.toggle("active", type === "admin");
+        }
+    </script>
+</body>
+</html>

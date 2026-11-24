@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Smart Health Monitoring</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 5%;
+            background: #092b49;
+            color: white;
+        }
+
+        header h2 {
+            font-size: 21px;
+        }
+
+        .logout {
+            padding: 10px 17px;
+            border-radius: 7px;
+            background: #eafafa;
+            color: #087f8c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            margin-bottom: 8px;
+            color: #102b46;
+        }
+
+        .welcome p {
+            color: #64748b;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            padding: 24px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+        }
+
+        .stat-card p {
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .stat-card h2 {
+            color: #087f8c;
+            font-size: 30px;
+        }
+
+        .panel {
+            padding: 25px;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+        }
+
+        .panel h2 {
+            margin-bottom: 20px;
+            color: #102b46;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        .create-button {
+            margin-top: 18px;
+            padding: 13px 22px;
+            border: none;
+            border-radius: 7px;
+            background: #087f8c;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .create-button:hover {
+            background: #066773;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 7px;
+        }
+
+        .success {
+            background: #e8f7ed;
+            color: #166534;
+        }
+
+        .error {
+            background: #fff0f0;
+            color: #b42318;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 550px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+        }
+
+        .role {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #e0f2fe;
+            color: #075985;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .role.admin {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .notice {
+            margin-top: 15px;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 650px) {
+            header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>＋ SMART HEALTH | ADMIN</h2>
+    <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+</header>
+
+<main class="container">
+
+    <section class="welcome">
+        <h1>Admin Dashboard</h1>
+        <p>Welcome, {{ account["name"] }}. Manage website accounts here.</p>
+    </section>
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <p>Total User Accounts</p>
+            <h2>{{ total_users }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Total Admin Accounts</p>
+            <h2>{{ total_admins }}</h2>
+        </div>
+
+    </section>
+
+    <section class="panel">
+        <h2>＋ Create New Account</h2>
+
+        {% if success %}
+            <div class="message success">{{ success }}</div>
+        {% endif %}
+
+        {% if error %}
+            <div class="message error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST"
+              action="{{ url_for('admin_create_account') }}">
+
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ session.get('admin_csrf_token', '') }}">
+
+            <div class="form-grid">
+
+                <div>
+                    <label for="name">Full Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        maxlength="80"
+                        placeholder="Enter full name"
+                        required>
+                </div>
+
+                <div>
+                    <label for="user_id">User ID</label>
+                    <input
+                        type="text"
+                        id="user_id"
+                        name="user_id"
+                        maxlength="40"
+                        placeholder="Create a unique User ID"
+                        required>
+                </div>
+
+                <div>
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        minlength="10"
+                        placeholder="Minimum 10 characters"
+                        required>
+                </div>
+
+                <div>
+                    <label for="role">Account Type</label>
+                    <select id="role" name="role" required>
+                        <option value="user">Normal User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button type="submit" class="create-button">
+                Create Account
+            </button>
+
+        </form>
+
+        <p class="notice">
+            Admin accounts can access account management.
+            Normal users can access only their own profiles and readings.
+            Keep admin login details private.
+        </p>
+    </section>
+
+    <section class="panel">
+        <h2>👥 User Management</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>User ID</th>
+                        <th>Account Type</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user["id"] }}</td>
+                        <td>{{ user["name"] }}</td>
+                        <td>{{ user["user_id"] }}</td>
+                        <td>
+                            <span class="role {{ user['role'] }}">
+                                {{ user["role"] }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4">No accounts found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

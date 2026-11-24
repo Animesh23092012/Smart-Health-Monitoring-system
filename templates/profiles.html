@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Profile | Smart Health</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0b1120;
+            color: white;
+            padding: 25px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #38bdf8;
+        }
+
+        p {
+            color: #94a3b8;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit, minmax(230px, 1fr)
+            );
+            gap: 18px;
+            margin: 25px 0;
+        }
+
+        .card {
+            background: #172033;
+            border: 1px solid #334155;
+            padding: 22px;
+            border-radius: 13px;
+        }
+
+        .card h2 {
+            margin-top: 0;
+        }
+
+        .card p {
+            margin: 10px 0;
+        }
+
+        button, .add, .logout {
+            display: inline-block;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button, .add {
+            background: #0284c7;
+        }
+
+        .logout {
+            background: #dc2626;
+        }
+
+        button:hover, .add:hover {
+            background: #0369a1;
+        }
+
+        form {
+            margin-top: 18px;
+        }
+
+        .note {
+            background: #172033;
+            padding: 18px;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <div>
+            <h1>Choose a Profile</h1>
+            <p>Select whose health dashboard you want to open.</p>
+        </div>
+
+        <a class="logout" href="{{ url_for('logout') }}">
+            Logout
+        </a>
+    </header>
+
+    <a class="add" href="{{ url_for('add_profile') }}">
+        + Add Family Member
+    </a>
+
+    <div class="grid">
+
+        {% for profile in profiles %}
+
+        <div class="card">
+
+            <h2>{{ profile.name }}</h2>
+
+            <p>
+                Relationship: {{ profile.relationship }}
+            </p>
+
+            <p>
+                Age: {{ profile.age_label }}
+            </p>
+
+            <p>
+                Category: {{ profile.age_group }}
+            </p>
+
+            <form method="POST"
+                  action="{{ url_for(
+                    'select_profile',
+                    profile_id=profile.id
+                  ) }}">
+
+                <button type="submit">
+                    Open Dashboard
+                </button>
+
+            </form>
+
+            <form method="POST"
+                  action="{{ url_for(
+                    'update_profile_dob',
+                    profile_id=profile.id
+                  ) }}">
+
+                <label>Date of Birth</label>
+
+                <input type="date"
+                       name="date_of_birth"
+                       max="{{ '' }}"
+                       required
+                       style="width:100%;padding:10px;margin-top:8px;">
+
+                <button type="submit">
+                    Save Date of Birth
+                </button>
+
+            </form>
+
+        </div>
+
+        {% else %}
+
+        <p>No profiles found. Create your first profile.</p>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="note">
+        <strong>Privacy reminder</strong>
+        <p>
+            Only add people whose information you are authorized
+            to manage. Keep family health profiles private.
+        </p>
+    </div>
+
+</div>
+
+<script>
+    document.querySelectorAll(
+        'input[name="date_of_birth"]'
+    ).forEach(input => {
+        input.max = new Date().toISOString().split("T")[0];
+    });
+</script>
+
+</body>
+</html>

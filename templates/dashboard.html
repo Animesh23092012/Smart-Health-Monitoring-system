@@ -1,0 +1,656 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Health Monitoring System</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0b1120;
+            color: #f1f5f9;
+            padding: 25px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        header h1 {
+            font-size: 25px;
+            color: #38bdf8;
+        }
+
+        header p {
+            color: #94a3b8;
+            margin-top: 7px;
+        }
+
+        .logout {
+            background: #ef4444;
+            color: white;
+            text-decoration: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+        }
+
+        .welcome {
+            background: linear-gradient(120deg, #172554, #164e63);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 {
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #cbd5e1;
+        }
+
+        .demo-banner {
+            background: #422006;
+            color: #fde68a;
+            border: 1px solid #92400e;
+            padding: 13px;
+            border-radius: 9px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #172033;
+            border: 1px solid #263449;
+            padding: 22px;
+            border-radius: 13px;
+        }
+
+        .card h3 {
+            color: #94a3b8;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        .value {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .unit {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            background: #334155;
+            color: #e2e8f0;
+            margin-top: 12px;
+        }
+
+        .section {
+            background: #172033;
+            border: 1px solid #263449;
+            padding: 22px;
+            border-radius: 13px;
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            font-size: 19px;
+            margin-bottom: 18px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 9px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            font-size: 14px;
+            background: #263449;
+            border-left: 4px solid #38bdf8;
+        }
+
+        .alert.warning {
+            background: #422006;
+            border-left-color: #f59e0b;
+            color: #fde68a;
+        }
+
+        .alert.success {
+            background: #052e16;
+            border-left-color: #22c55e;
+            color: #bbf7d0;
+        }
+
+        .alert.error {
+            background: #450a0a;
+            border-left-color: #ef4444;
+            color: #fecaca;
+        }
+
+        .chart-container {
+            height: 300px;
+        }
+
+        button {
+            background: #0284c7;
+            border: none;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px 5px 5px 0;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #0369a1;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 550px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 13px;
+            border-bottom: 1px solid #334155;
+            font-size: 13px;
+        }
+
+        th {
+            color: #38bdf8;
+        }
+
+        td {
+            color: #cbd5e1;
+        }
+
+        .muted {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            color: #64748b;
+            padding: 20px;
+            font-size: 13px;
+        }
+
+        @media(max-width: 600px) {
+            body {
+                padding: 14px;
+            }
+
+            header h1 {
+                font-size: 20px;
+            }
+
+            .value {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <header>
+        <div>
+            <h1>Smart Health Monitoring System</h1>
+            <p>Your personal health monitoring dashboard</p>
+        </div>
+
+        <a class="logout" href="{{ url_for('logout') }}">Logout</a>
+    </header>
+
+    <div class="welcome">
+        <h2>Welcome, {{ name }} 👋</h2>
+        <p>Monitor your readings and check your system status.</p>
+    </div>
+
+    <div class="demo-banner" id="demoBanner">
+        🧪 DEMO MODE — Readings generated using the demo button are simulated,
+        not real medical measurements.
+    </div>
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>❤️ Heart Rate</h3>
+            <div class="value" id="heartRate">--</div>
+            <div class="unit">Beats per minute (BPM)</div>
+            <span class="status" id="heartStatus">Waiting for data</span>
+        </div>
+
+        <div class="card">
+            <h3>🩺 Blood Pressure</h3>
+            <div class="value" id="bloodPressure">-- / --</div>
+            <div class="unit">mmHg</div>
+            <span class="status" id="bpStatus">Waiting for data</span>
+        </div>
+
+        <div class="card">
+            <h3>📡 Sensor Status</h3>
+            <div class="value" id="sensorStatus">Offline</div>
+            <div class="unit">Latest received reading</div>
+            <span class="status" id="connectionStatus">No data</span>
+        </div>
+
+        <div class="card">
+            <h3>🕒 Last Reading</h3>
+            <div class="value" id="lastReading" style="font-size:18px">--</div>
+            <div class="unit">Most recent saved reading</div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <h2>🔔 Smart Health Alerts</h2>
+        <div id="alertPanel">
+            <div class="alert">Checking your system...</div>
+        </div>
+        <p class="muted">
+            Alerts are informational only. They do not diagnose health
+            conditions or replace advice from a qualified healthcare professional.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>📊 Heart Rate History</h2>
+        <div class="chart-container">
+            <canvas id="heartChart"></canvas>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🧪 Test Your Dashboard</h2>
+        <p class="muted">
+            Generate one simulated reading to test the dashboard.
+        </p>
+        <button id="demoButton" onclick="addDemoReading()">
+            Generate Demo Reading
+        </button>
+        <button onclick="refreshDashboard()">
+            Refresh Dashboard
+        </button>
+        <p id="message" class="muted"></p>
+    </div>
+
+    <div class="section">
+        <h2>📋 Recent Reading History</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Heart Rate</th>
+                        <th>Blood Pressure</th>
+                        <th>Source</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTable">
+                    <tr>
+                        <td colspan="4">Loading readings...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        Smart Health Monitoring System | Student Project
+    </footer>
+
+</div>
+
+<script>
+    let heartChart;
+
+    function createChart() {
+        const ctx = document.getElementById("heartChart");
+
+        heartChart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Heart Rate (BPM)",
+                    data: [],
+                    borderColor: "#38bdf8",
+                    backgroundColor: "rgba(56,189,248,0.12)",
+                    fill: true,
+                    tension: 0.35
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        title: {
+                            display: true,
+                            text: "BPM",
+                            color: "#94a3b8"
+                        },
+                        ticks: { color: "#94a3b8" },
+                        grid: { color: "#334155" }
+                    },
+                    x: {
+                        ticks: { color: "#94a3b8" },
+                        grid: { color: "#334155" }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: "#e2e8f0" }
+                    }
+                }
+            }
+        });
+    }
+
+    function showAlert(message, type = "") {
+        const panel = document.getElementById("alertPanel");
+        const item = document.createElement("div");
+
+        item.className = "alert " + type;
+        item.textContent = message;
+        panel.appendChild(item);
+    }
+
+    function displayAlerts(reading) {
+        const panel = document.getElementById("alertPanel");
+        panel.replaceChildren();
+
+        if (!reading) {
+            showAlert(
+                "No readings available. Generate a demo reading or connect a sensor."
+            );
+            return;
+        }
+
+        const isDemo = reading.sensor_status === "Demo";
+
+        if (isDemo) {
+            showAlert(
+                "Demo data detected. These values are simulated and must not be used for medical decisions.",
+                "warning"
+            );
+        } else {
+            showAlert(
+                "A reading has been received. Check that the sensor is connected correctly.",
+                "success"
+            );
+        }
+
+        if (reading.heart_rate == null &&
+            reading.systolic == null &&
+            reading.diastolic == null) {
+            showAlert(
+                "The latest record does not contain any available measurements.",
+                "warning"
+            );
+        }
+
+        if (reading.systolic == null || reading.diastolic == null) {
+            showAlert(
+                "Blood pressure data is unavailable. Your pulse and GSR sensors cannot measure blood pressure."
+            );
+        }
+
+        showAlert(
+            "If you feel unwell, tell a parent or trusted adult and seek medical advice. Do not rely on this prototype."
+        );
+    }
+
+    function formatTime(value) {
+        if (!value) return "--";
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) return value;
+
+        return date.toLocaleString();
+    }
+
+    function updateDashboard(reading) {
+        if (!reading) {
+            document.getElementById("heartRate").textContent = "--";
+            document.getElementById("bloodPressure").textContent = "-- / --";
+            document.getElementById("sensorStatus").textContent = "Offline";
+            document.getElementById("lastReading").textContent = "--";
+            document.getElementById("heartStatus").textContent = "No data";
+            document.getElementById("bpStatus").textContent = "No data";
+            document.getElementById("connectionStatus").textContent = "No data";
+            document.getElementById("demoBanner").style.display = "block";
+            displayAlerts(null);
+            return;
+        }
+
+        document.getElementById("heartRate").textContent =
+            reading.heart_rate == null ? "--" : reading.heart_rate;
+
+        document.getElementById("bloodPressure").textContent =
+            reading.systolic == null || reading.diastolic == null
+                ? "-- / --"
+                : reading.systolic + " / " + reading.diastolic;
+
+        document.getElementById("sensorStatus").textContent =
+            reading.sensor_status || "Unknown";
+
+        document.getElementById("lastReading").textContent =
+            formatTime(reading.timestamp);
+
+        document.getElementById("heartStatus").textContent =
+            reading.heart_rate == null ? "Unavailable" : "Reading received";
+
+        document.getElementById("bpStatus").textContent =
+            reading.systolic == null || reading.diastolic == null
+                ? "Unavailable"
+                : "Reading received";
+
+        document.getElementById("connectionStatus").textContent =
+            reading.sensor_status === "Demo" ? "Demo data" : "Data received";
+
+        document.getElementById("demoBanner").style.display =
+            reading.sensor_status === "Demo" ? "block" : "none";
+
+        displayAlerts(reading);
+
+        const age = Date.now() - new Date(reading.timestamp).getTime();
+
+        if (!Number.isNaN(age) && age > 5 * 60 * 1000) {
+            showAlert(
+                "The latest reading is more than five minutes old. It may not represent current conditions.",
+                "warning"
+            );
+        }
+    }
+
+    async function loadLatest() {
+        const response = await fetch("{{ url_for('latest_data') }}");
+
+        if (!response.ok) {
+            throw new Error("Could not load latest reading.");
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.message || "Could not load reading.");
+        }
+
+        updateDashboard(data.reading);
+    }
+
+    async function loadHistory() {
+        const response = await fetch("{{ url_for('reading_history') }}");
+
+        if (!response.ok) {
+            throw new Error("Could not load reading history.");
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.message || "Could not load history.");
+        }
+
+        const table = document.getElementById("historyTable");
+        table.replaceChildren();
+
+        const readings = data.readings || [];
+
+        if (readings.length === 0) {
+            const row = table.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 4;
+            cell.textContent = "No readings available yet.";
+        }
+
+        const chartLabels = [];
+        const chartValues = [];
+
+        readings.slice().reverse().forEach(reading => {
+            const row = table.insertRow();
+
+            const heart = reading.heart_rate == null
+                ? "--"
+                : reading.heart_rate + " BPM";
+
+            const bp = reading.systolic == null ||
+                       reading.diastolic == null
+                ? "--"
+                : reading.systolic + " / " + reading.diastolic;
+
+            [
+                heart,
+                bp,
+                reading.sensor_status || "Unknown",
+                formatTime(reading.timestamp)
+            ].forEach(value => {
+                const cell = row.insertCell();
+                cell.textContent = value;
+            });
+
+            if (reading.heart_rate != null) {
+                chartLabels.push(
+                    new Date(reading.timestamp).toLocaleTimeString()
+                );
+                chartValues.push(reading.heart_rate);
+            }
+        });
+
+        heartChart.data.labels = chartLabels;
+        heartChart.data.datasets[0].data = chartValues;
+        heartChart.update();
+    }
+
+    async function refreshDashboard() {
+        const message = document.getElementById("message");
+
+        try {
+            await Promise.all([loadLatest(), loadHistory()]);
+            message.textContent = "Dashboard updated successfully.";
+        } catch (error) {
+            message.textContent = error.message;
+        }
+    }
+
+    async function addDemoReading() {
+        const button = document.getElementById("demoButton");
+        const message = document.getElementById("message");
+
+        button.disabled = true;
+        message.textContent = "Saving demo reading...";
+
+        try {
+            const response = await fetch(
+                "{{ url_for('receive_sensor_data') }}",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        heart_rate: 78,
+                        systolic: null,
+                        diastolic: null,
+                        demo: true
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || "Could not save demo reading.");
+            }
+
+            message.textContent = "Demo reading saved successfully!";
+            await refreshDashboard();
+
+        } catch (error) {
+            message.textContent = error.message;
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    createChart();
+    refreshDashboard();
+
+    // Refresh displayed data every 30 seconds.
+    setInterval(refreshDashboard, 30000);
+</script>
+
+</body>
+</html>

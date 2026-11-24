@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Health Monitoring System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- VISITOR POPUP CSS -->
+    <style>
+        .visitor-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(2, 6, 23, .78);
+            backdrop-filter: blur(7px);
+        }
+
+        .visitor-overlay.show {
+            display: flex;
+        }
+
+        .visitor-modal {
+            width: 100%;
+            max-width: 460px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px;
+            color: #e2e8f0;
+            background: #172033;
+            border: 1px solid #334155;
+            border-radius: 18px;
+            box-shadow: 0 25px 80px rgba(0,0,0,.4);
+        }
+
+        .visitor-modal h2 {
+            margin: 0 0 10px;
+            color: #38bdf8;
+        }
+
+        .visitor-modal p {
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .visitor-modal label {
+            display: block;
+            margin-top: 14px;
+            font-size: 14px;
+        }
+
+        .visitor-modal input[type="text"],
+        .visitor-modal input[type="number"],
+        .visitor-modal input[type="email"],
+        .visitor-modal input[type="tel"] {
+            width: 100%;
+            margin-top: 7px;
+            padding: 12px;
+            color: white;
+            background: #0b1120;
+            border: 1px solid #475569;
+            border-radius: 8px;
+        }
+
+        .visitor-check {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .visitor-check input {
+            margin-top: 3px;
+        }
+
+        .visitor-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .visitor-actions button {
+            flex: 1;
+            padding: 12px;
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .visitor-submit {
+            color: white;
+            background: #0284c7;
+        }
+
+        .visitor-skip {
+            color: #e2e8f0;
+            background: #334155;
+        }
+
+        .visitor-message {
+            min-height: 20px;
+            margin-top: 12px;
+            color: #fca5a5;
+            font-size: 13px;
+        }
+
+        .visitor-success {
+            text-align: center;
+        }
+
+        .visitor-success button {
+            margin-top: 15px;
+            padding: 12px 22px;
+            color: white;
+            background: #0284c7;
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 480px) {
+            .visitor-modal {
+                padding: 22px;
+            }
+
+            .visitor-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="main-header">
+
+        <div class="logo">
+            <span class="logo-symbol">+</span>
+
+            <div>
+                <strong>SMART HEALTH</strong>
+                <small>MONITORING SYSTEM</small>
+            </div>
+        </div>
+
+        <nav class="main-nav">
+
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#technology">Technology</a>
+            <a href="#workflow">How It Works</a>
+            <a href="#hardware">Hardware</a>
+
+            <a href="{{ url_for('login') }}"
+               class="nav-login">
+                Login
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- ================= HERO ================= -->
+
+    <main>
+
+        <section class="hero" id="home">
+
+            <div class="hero-background"></div>
+
+            <div class="hero-content">
+
+                <p class="hero-tag">
+                    STUDENT INNOVATION PROJECT
+                </p>
+
+                <h1>
+                    SMARTER
+                    <span>HEALTH.</span>
+                </h1>
+
+                <p class="hero-description">
+                    A connected health monitoring prototype designed
+                    to collect, monitor and visualize important health
+                    information through sensors and a digital dashboard.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a href="#about"
+                       class="primary-button">
+                        Explore Project →
+                    </a>
+
+                    <a href="{{ url_for('login') }}"
+                       class="secondary-button">
+                        Open Dashboard
+                    </a>
+
+                </div>
+
+            </div>
+
+            <!-- HERO VISUAL -->
+
+            <div class="hero-visual">
+
+                <div class="health-orbit orbit-one"></div>
+                <div class="health-orbit orbit-two"></div>
+
+                <div class="health-core">
+
+                    <div class="pulse-ring"></div>
+
+                    <div class="heart-symbol">
+                        ♥
+                    </div>
+
+                    <div class="heart-line">
+                        ──╱╲──╱╲────
+                    </div>
+
+                    <span>
+                        HEALTH
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= STATS ================= -->
+
+        <section class="stats-section">
+
+            <div class="stat">
+                <strong>01</strong>
+                <span>
+                    HEALTH
+                    MONITORING
+                </span>
+            </div>
+
+            <div class="stat">
+                <strong>02</strong>
+                <span>
+                    SENSOR
+                    TECHNOLOGY
+                </span>
+            </div>
+
+            <div class="stat">
+                <strong>03</strong>
+                <span>
+                    REAL-TIME
+                    DASHBOARD
+                </span>
+            </div>
+
+            <div class="stat">
+                <strong>04</strong>
+                <span>
+                    ALERT
+                    SYSTEM
+                </span>
+            </div>
+
+        </section>
+
+
+        <!-- ================= ABOUT ================= -->
+
+        <section class="section about-section" id="about">
+
+            <div class="section-number">
+                01
+            </div>
+
+            <div class="section-content">
+
+                <p class="section-label">
+                    THE PROJECT
+                </p>
+
+                <h2>
+                    Technology that
+                    <span>connects health.</span>
+                </h2>
+
+                <p class="large-text">
+                    The Smart Health Monitoring System is a student
+                    innovation project that explores how sensors,
+                    microcontrollers, communication technology and
+                    software can work together to create a connected
+                    health-monitoring platform.
+                </p>
+
+                <p>
+                    The prototype is designed to collect sensor
+                    information, transmit it to a computer system,
+                    store readings and display them through a
+                    user-friendly dashboard.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= TECHNOLOGY ================= -->
+
+        <section class="section technology-section" id="technology">
+
+            <div class="section-number">
+                02
+            </div>
+
+            <div class="section-content">
+
+                <p class="section-label">
+                    TECHNOLOGY
+                </p>
+
+                <h2>
+                    From sensor
+                    <span>to screen.</span>
+                </h2>
+
+                <div class="technology-grid">
+
+                    <div class="technology-card">
+
+                        <span class="tech-number">01</span>
+
+                        <div class="tech-icon">♥</div>
+
+                        <h3>Health Sensors</h3>
+
+                        <p>
+                            Sensors collect project-defined health
+                            measurements for monitoring.
+                        </p>
+
+                    </div>
+
+                    <div class="technology-card">
+
+                        <span class="tech-number">02</span>
+
+                        <div class="tech-icon">◉</div>
+
+                        <h3>Microcontroller</h3>
+
+                        <p>
+                            Processes sensor information and prepares
+                            it for communication.
+                        </p>
+
+                    </div>
+
+                    <div class="technology-card">
+
+                        <span class="tech-number">03</span>
+
+                        <div class="tech-icon">↗</div>
+
+                        <h3>Communication</h3>
+
+                        <p>
+                            Transfers information between the hardware
+                            and monitoring system.
+                        </p>
+
+                    </div>
+
+                    <div class="technology-card">
+
+                        <span class="tech-number">04</span>
+
+                        <div class="tech-icon">▣</div>
+
+                        <h3>Dashboard</h3>
+
+                        <p>
+                            Displays readings and system information
+                            in one place.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= WORKFLOW ================= -->
+
+        <section class="section workflow-section" id="workflow">
+
+            <div class="section-number">
+                03
+            </div>
+
+            <div class="section-content">
+
+                <p class="section-label">
+                    HOW IT WORKS
+                </p>
+
+                <h2>
+                    One system.
+                    <span>Five stages.</span>
+                </h2>
+
+                <div class="workflow">
+
+                    <div class="workflow-step">
+                        <strong>01</strong>
+                        <h3>SENSE</h3>
+                        <p>Sensors collect information.</p>
+                    </div>
+
+                    <div class="workflow-line"></div>
+
+                    <div class="workflow-step">
+                        <strong>02</strong>
+                        <h3>PROCESS</h3>
+                        <p>The controller processes the data.</p>
+                    </div>
+
+                    <div class="workflow-line"></div>
+
+                    <div class="workflow-step">
+                        <strong>03</strong>
+                        <h3>TRANSMIT</h3>
+                        <p>Information is sent to the system.</p>
+                    </div>
+
+                    <div class="workflow-line"></div>
+
+                    <div class="workflow-step">
+                        <strong>04</strong>
+                        <h3>MONITOR</h3>
+                        <p>Readings appear on the dashboard.</p>
+                    </div>
+
+                    <div class="workflow-line"></div>
+
+                    <div class="workflow-step">
+                        <strong>05</strong>
+                        <h3>ALERT</h3>
+                        <p>The system can indicate configured alerts.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= HARDWARE ================= -->
+
+        <section class="section hardware-section" id="hardware">
+
+            <div class="section-number">
+                04
+            </div>
+
+            <div class="section-content">
+
+                <p class="section-label">
+                    HARDWARE
+                </p>
+
+                <h2>
+                    Built with
+                    <span>real technology.</span>
+                </h2>
+
+                <div class="hardware-grid">
+
+                    <div class="hardware-card">
+                        <span>01</span>
+                        <h3>Microcontroller</h3>
+                        <p>
+                            Central control unit for the prototype.
+                        </p>
+                    </div>
+
+                    <div class="hardware-card">
+                        <span>02</span>
+                        <h3>Health Sensors</h3>
+                        <p>
+                            Sensor modules used to collect project
+                            measurements.
+                        </p>
+                    </div>
+
+                    <div class="hardware-card">
+                        <span>03</span>
+                        <h3>Communication</h3>
+                        <p>
+                            Communication hardware for transferring
+                            information.
+                        </p>
+                    </div>
+
+                    <div class="hardware-card">
+                        <span>04</span>
+                        <h3>Computer System</h3>
+                        <p>
+                            Flask, Python and SQLite power the
+                            monitoring platform.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= DASHBOARD CTA ================= -->
+
+        <section class="dashboard-cta">
+
+            <div>
+
+                <p class="section-label">
+                    LIVE MONITORING
+                </p>
+
+                <h2>
+                    See your health
+                    <span>dashboard.</span>
+                </h2>
+
+                <p>
+                    Access the project monitoring interface and
+                    view connected sensor information.
+                </p>
+
+            </div>
+
+            <a href="{{ url_for('login') }}"
+               class="primary-button large-button">
+
+                Open Dashboard →
+
+            </a>
+
+        </section>
+
+
+        <!-- ================= ABOUT INNOVATOR ================= -->
+
+        <section class="innovator-section">
+
+            <div class="innovator-content">
+
+                <p class="section-label">
+                    THE INNOVATOR
+                </p>
+
+                <h2>
+                    Built by a
+                    <span>student.</span>
+                </h2>
+
+                <p>
+                    This project is developed as a student innovation
+                    project exploring electronics, programming,
+                    artificial intelligence and connected technology.
+                </p>
+
+                <div class="innovator-name">
+                    ANIMESH KUMAR SAHU
+                </div>
+
+                <p class="innovator-role">
+                    Student • Innovator • Developer
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="main-footer">
+
+        <div class="footer-logo">
+            SMART HEALTH
+        </div>
+
+        <p>
+            Smart Health Monitoring System
+            • Student Innovation Project
+        </p>
+
+        <p class="footer-disclaimer">
+            Prototype only — not a medical diagnostic system.
+        </p>
+
+    </footer>
+
+
+    <!-- ================= VISITOR POPUP ================= -->
+
+    <div class="visitor-overlay"
+         id="visitorOverlay"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="visitorTitle">
+
+        <div class="visitor-modal" id="visitorFormPanel">
+
+            <h2 id="visitorTitle">
+                Welcome to Smart Health
+            </h2>
+
+            <p>
+                You can optionally share your details if you would
+                like us to contact you about this student project.
+                You can skip and browse the website.
+            </p>
+
+            <form id="visitorForm">
+
+                <label for="visitorName">Name</label>
+
+                <input
+                    id="visitorName"
+                    name="name"
+                    type="text"
+                    maxlength="80"
+                    placeholder="Enter your name"
+                    required
+                >
+
+                <label for="visitorAge">Age</label>
+
+                <input
+                    id="visitorAge"
+                    name="age"
+                    type="number"
+                    min="1"
+                    max="125"
+                    placeholder="Enter your age"
+                    required
+                >
+
+                <label for="visitorEmail">
+                    Email address (optional)
+                </label>
+
+                <input
+                    id="visitorEmail"
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email"
+                >
+
+                <label for="visitorPhone">
+                    Phone number (optional)
+                </label>
+
+                <input
+                    id="visitorPhone"
+                    name="phone"
+                    type="tel"
+                    maxlength="20"
+                    placeholder="Enter your phone number"
+                >
+
+                <label class="visitor-check">
+                    <input
+                        id="visitorContactConsent"
+                        type="checkbox"
+                        required
+                    >
+
+                    <span>
+                        I agree that the project team may use the
+                        contact details I provide to contact me
+                        about this project.
+                    </span>
+                </label>
+
+                <label class="visitor-check"
+                       id="guardianConsentRow"
+                       style="display:none;">
+
+                    <input
+                        id="visitorGuardianConsent"
+                        type="checkbox"
+                    >
+
+                    <span>
+                        I confirm that my parent or legal guardian
+                        has given permission for me to share
+                        these details.
+                    </span>
+
+                </label>
+
+                <div class="visitor-message"
+                     id="visitorMessage"
+                     aria-live="polite"></div>
+
+                <div class="visitor-actions">
+
+                    <button
+                        class="visitor-submit"
+                        type="submit">
+                        Submit details
+                    </button>
+
+                    <button
+                        class="visitor-skip"
+                        type="button"
+                        id="visitorSkip">
+                        Skip
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- SUCCESS MESSAGE -->
+
+        <div class="visitor-modal visitor-success"
+             id="visitorSuccessPanel"
+             style="display:none;">
+
+            <h2>Thank you!</h2>
+
+            <p>
+                Your details have been submitted successfully.
+                We may contact you about the Smart Health student
+                project, based on the permission you gave.
+            </p>
+
+            <button type="button" id="visitorDone">
+                Continue to website
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= VISITOR JAVASCRIPT ================= -->
+
+    <script>
+    (() => {
+
+        const overlay =
+            document.getElementById("visitorOverlay");
+
+        const form =
+            document.getElementById("visitorForm");
+
+        const ageInput =
+            document.getElementById("visitorAge");
+
+        const guardianRow =
+            document.getElementById("guardianConsentRow");
+
+        const guardianCheckbox =
+            document.getElementById("visitorGuardianConsent");
+
+        const message =
+            document.getElementById("visitorMessage");
+
+        const formPanel =
+            document.getElementById("visitorFormPanel");
+
+        const successPanel =
+            document.getElementById("visitorSuccessPanel");
+
+
+        // Show guardian permission for visitors under 18
+
+        function updateGuardianRequirement() {
+
+            const age = Number(ageInput.value);
+
+            const isMinor =
+                ageInput.value !== "" && age < 18;
+
+            guardianRow.style.display =
+                isMinor ? "flex" : "none";
+
+            guardianCheckbox.required = isMinor;
+
+            if (!isMinor) {
+                guardianCheckbox.checked = false;
+            }
+        }
+
+
+        // Close popup
+
+        function closeVisitorPopup() {
+            overlay.classList.remove("show");
+        }
+
+
+        ageInput.addEventListener(
+            "input",
+            updateGuardianRequirement
+        );
+
+
+        document.getElementById("visitorSkip")
+            .addEventListener(
+                "click",
+                closeVisitorPopup
+            );
+
+
+        document.getElementById("visitorDone")
+            .addEventListener(
+                "click",
+                closeVisitorPopup
+            );
+
+
+        // Submit visitor information
+
+        form.addEventListener("submit", async (event) => {
+
+            event.preventDefault();
+
+            message.textContent = "";
+
+            const email =
+                document.getElementById("visitorEmail")
+                .value.trim();
+
+            const phone =
+                document.getElementById("visitorPhone")
+                .value.trim();
+
+            if (!email && !phone) {
+
+                message.textContent =
+                    "Please enter an email address or phone number.";
+
+                return;
+            }
+
+
+            const age = Number(ageInput.value);
+
+            if (age < 18 && !guardianCheckbox.checked) {
+
+                message.textContent =
+                    "Please get parent or guardian permission before submitting.";
+
+                return;
+            }
+
+
+            const payload = {
+
+                name:
+                    document.getElementById("visitorName")
+                    .value.trim(),
+
+                age: age,
+
+                email: email,
+
+                phone: phone,
+
+                contact_consent:
+                    document.getElementById(
+                        "visitorContactConsent"
+                    ).checked,
+
+                guardian_consent:
+                    age < 18
+                        ? guardianCheckbox.checked
+                        : false
+            };
+
+
+            try {
+
+                const response = await fetch(
+                    "/api/visitor-contact",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+
+                const result = await response.json();
+
+
+                if (!response.ok || !result.success) {
+
+                    message.textContent =
+                        result.message ||
+                        result.error ||
+                        "Unable to submit details. Please try again.";
+
+                    return;
+                }
+
+
+                formPanel.style.display = "none";
+
+                successPanel.style.display = "block";
+
+
+            } catch (error) {
+
+                message.textContent =
+                    "Could not connect to the server. Please try again.";
+
+            }
+
+        });
+
+
+        // Show popup once per browser tab
+
+        if (
+            !sessionStorage.getItem(
+                "smartHealthVisitorPopupSeen"
+            )
+        ) {
+
+            window.addEventListener("load", () => {
+
+                overlay.classList.add("show");
+
+                sessionStorage.setItem(
+                    "smartHealthVisitorPopupSeen",
+                    "yes"
+                );
+
+            });
+
+        }
+
+    })();
+    </script>
+
+</body>
+</html>
